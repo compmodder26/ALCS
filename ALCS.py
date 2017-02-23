@@ -52,9 +52,7 @@ def cleanup():
 # Will give the current value that the pressure sensor is reading.
 # Values range from 0 (nothing on the sensor) to 1023 (maximum pressure)
 def getPressureSensorValue():
-	pressureValue = adcReader.read_adc(ADCCHANNEL)
-
-	return pressureValue
+	return adcReader.read_adc(ADCCHANNEL)
 
 # Function: lightOn()
 #
