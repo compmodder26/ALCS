@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 ###################################################################################
 #
 # ALCS.py
@@ -24,12 +26,12 @@ import time # Library that allows us to pause the program (in the case where we 
 import Adafruit_MCP3008 as ADC # Library that allows us to easily talk to the MCP3008 ADC (Analog to Digital Converter)
 
 # set up user friendly names for the GPIO pins we are working with
-LIGHT = 18 # Pin number we are going to control the light with
-ADCCLOCK = 23 # Pin number connected to the ADC (Analog to Digital Converter) Clock
-ADCMOSI = 24 # Pin number connected to the ADC MOSI
-ADCMISO = 25 # Pin number connected to the ADC MISO
-ADCCS = 12 # Pin Number connected to the ADC CS
-ADCCHANNEL = 0 # Channel number of the ADC that the pressure sensor is connected to (0 - 7)
+LIGHT   = 21 	# Pin number we are going to control the light with
+ADCCLK  = 18	# Pin number connected to the ADC Clock pin
+ADCMISO = 23	# Pin number connected to the ADC Input pin
+ADCMOSI = 24	# Pin number connected to the ADC Output pin
+ADCCS   = 25	# Pin number connected to the ADC Channel Select pin
+ADCCHAN = 0	# ADC channel number we are listening on
 
 # set up GPIO (General Purpose Input/Output)
 GPIO.setwarnings(False) # we don't want to see any warnings
@@ -38,8 +40,8 @@ GPIO.setmode(GPIO.BCM) # set how the numbers of the pins are interpreted (system
 # set up the pin modes
 GPIO.setup(LIGHT, GPIO.OUT) # we tell the raspberry pi that we want to use this pin to output signal to the light (sending a signal out)
 
-# Set up ADC Reader
-adcReader = ADC.MCP3008(clk=ADCCLOCK, cs=ADCCS, miso=ADCMISO, mosi=ADCMOSI)
+# Set up ADC Reader (the Adafruit_MCP3008 library handles all the pin setup, etc.)
+adcReader = ADC.MCP3008(clk=ADCCLK, cs=ADCCS, miso=ADCMISO, mosi=ADCMOSI)
 
 # Function: cleanup()
 #
@@ -52,7 +54,7 @@ def cleanup():
 # Will give the current value that the pressure sensor is reading.
 # Values range from 0 (nothing on the sensor) to 1023 (maximum pressure)
 def getPressureSensorValue():
-	return adcReader.read_adc(ADCCHANNEL)
+	return adcReader.read_adc(ADCCHAN)
 
 # Function: lightOn()
 #
@@ -91,6 +93,17 @@ try:
 # Natalie's Main Program
 #####################################################
 	Blinky(5)
+
+	lastvalue = 0
+		
+	while (True):
+		pressurereading = getPressureSensorValue()
+		if pressurereading > 450 and lastvalue < 450:
+			Blinky(20)
+
+		lastvalue = pressurereading
+
+		time.sleep(0.1)
 #####################################################
 # END Natalie's Main Program
 #####################################################
