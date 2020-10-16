@@ -1,5 +1,5 @@
 // ALCSS - Automatic Light Car Stopping Signal
-// Reads from an analog weight sensor.  When weight is detected, flashes red lights
+// Reads from an ultrasonic sound sensor, when the car is close enough to the sensor, the lights will flash to indicate it to stop
 
 #include <Adafruit_NeoPixel.h>
 #include <FlashStorage.h>
